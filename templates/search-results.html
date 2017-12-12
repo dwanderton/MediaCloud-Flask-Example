@@ -17,27 +17,68 @@
   </div>
 
 </div>
-<div id="chart">
+<div id="container" style="min-width: 310px; height: 400px; margin: 0 auto"></div>
 
 </div>
-<script src="http://d3plus.org/js/d3.js"></script>
-<script src="http://d3plus.org/js/d3plus.js"></script>
+<script src="https://code.highcharts.com/highcharts.js"></script>
+<script src="https://code.highcharts.com/modules/exporting.js"></script>
+
+
 <script>
-
   var data = JSON.parse({{ results |tojson|safe }});
+console.info(data);
 
-  // some funky error with d3 plus makes lines drawnin a non-sensical way. After two hours determined that the mystery shall go unsolved.
- var visualization = d3plus.viz()
-    .container("#chart")  // container DIV to hold the visualization
-    .width(1024)
-    .height(400)
-    .data(data)  // data to use with the visualization
-    .type("line")       // visualization type
-    .id("name")         // key for which our data is unique on
-    .text("y")       // key to use for display text
-    .y("y")         // key to use for y-axis
-    .x("x")          // key to use for x-axis
-    .draw()             // finally, draw the visualization!
+function compare(a,b) {
+  if (a.x < b.x)
+    return -1;
+  if (a.x > b.x)
+    return 1;
+  return 0;
+}
+cleanedData = []
+for (i=0; i < data.length; i++)
+  if(data[i].x.length < 6){}else{cleanedData.push(data[i])}//.substr(0, 9))
+
+cleanedData.sort(compare);
+dataCategories = []
+for (i=0; i < cleanedData.length; i++)
+  dataCategories.push(cleanedData[i].x.substr(0,10))//.substr(0, 9))
+
+countData = []
+for (i=0; i < cleanedData.length; i++)
+    countData.push(cleanedData[i].y)
+
+  Highcharts.chart('container', {
+      chart: {
+          type: 'line'
+      },
+      title: {
+          text: '{{keywords}} sentences between {{ startdate }} and {{ enddate }}'
+      },
+      subtitle: {
+          text: 'Source: MediaCloud API'
+      },
+      xAxis: {
+          categories: dataCategories
+      },
+      yAxis: {
+          title: {
+              text: 'Occurances'
+          }
+      },
+      plotOptions: {
+          line: {
+              dataLabels: {
+                  enabled: true
+              },
+              enableMouseTracking: false
+          }
+      },
+      series: [{
+          name: '{{keywords}}',
+          data: countData
+      }]
+  });
 
 </script>
 
