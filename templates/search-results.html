@@ -7,15 +7,38 @@
 <div class="row">
 
   <div class="col-md-12">
-  
+
     <h3>Search Results</h3>
 
     <p>You searched for "{{keywords}}"</p>
 
-    <p>In the US Mainstream Media online there have {{ sentenceCount }} sentences matching your search so far this year.</p>
-
+    <p>In the US Mainstream Media online there have {{ sentenceCount }} sentences matching your search between {{ startdate }} and {{ enddate }}.</p>
+    <!--<p>There were results {{ results["split"] }}</p>-->
   </div>
 
-</div>    
+</div>
+<div id="chart">
+
+</div>
+<script src="http://d3plus.org/js/d3.js"></script>
+<script src="http://d3plus.org/js/d3plus.js"></script>
+<script>
+
+  var data = JSON.parse({{ results |tojson|safe }});
+
+  // some funky error with d3 plus makes lines drawnin a non-sensical way. After two hours determined that the mystery shall go unsolved.
+ var visualization = d3plus.viz()
+    .container("#chart")  // container DIV to hold the visualization
+    .width(1024)
+    .height(400)
+    .data(data)  // data to use with the visualization
+    .type("line")       // visualization type
+    .id("name")         // key for which our data is unique on
+    .text("y")       // key to use for display text
+    .y("y")         // key to use for y-axis
+    .x("x")          // key to use for x-axis
+    .draw()             // finally, draw the visualization!
+
+</script>
 
 {% endblock %}
