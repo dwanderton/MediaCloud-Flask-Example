@@ -4,19 +4,13 @@ from flask import Flask, render_template, request
 
 import mediacloud
 
-CONFIG_FILE = 'settings.config'
-basedir = os.path.dirname(os.path.realpath(__file__))
-
-# load the settings file
-config = ConfigParser.ConfigParser()
-config.read(os.path.join(basedir, 'settings.config'))
-
+api_key = os.environ.get('MCAPIKEY')
 # set up logging
 logging.basicConfig(level=logging.DEBUG)
 logging.info("Starting the MediaCloud example Flask app!")
 
 # clean a mediacloud api client
-mc = mediacloud.api.MediaCloud( config.get('mediacloud','api_key') )
+mc = mediacloud.api.MediaCloud(api_key)
 
 app = Flask(__name__)
 
