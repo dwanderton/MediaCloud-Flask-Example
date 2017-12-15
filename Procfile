@@ -1,2 +1,1 @@
-web: gunicorn mcserver:app
-init: python mcserver.py
+web: gunicorn app:app
