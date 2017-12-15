@@ -1,4 +1,4 @@
-import json, ConfigParser, logging, datetime, os
+import json, logging, datetime, os
 
 from flask import Flask, render_template, request
 
